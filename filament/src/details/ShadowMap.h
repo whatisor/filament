@@ -113,7 +113,7 @@ private:
             CameraInfo const& camera, FLightManager::ShadowParams const& params,
             uint8_t visibleLayers) noexcept;
 
-    static math::mat4f applyLISPSM(
+    static math::mat4f applyLISPSM(math::mat4f& Wp,
             CameraInfo const& camera, FLightManager::ShadowParams const& params,
             const math::mat4f& LMpMv,
             FrustumBoxIntersection const& wsShadowReceiverVolume, size_t vertexCount,
@@ -159,10 +159,11 @@ private:
 
     static math::mat4f directionalLightFrustum(float n, float f) noexcept;
 
-    math::mat4f getTextureCoordsMapping(math::mat4f const& S) const noexcept;
+    math::mat4f getTextureCoordsMapping() const noexcept;
 
-    float texelSizeWorldSpace(const math::mat4f& lightSpaceMatrix) const noexcept;
-    float texelSizeWorldSpace(const math::mat4f& lightSpaceMatrix, math::float3 const& str) const noexcept;
+    float texelSizeWorldSpace(const math::mat3f& worldToShadowTexture) const noexcept;
+    float texelSizeWorldSpace(const math::mat4f& worldToShadowTexture) const noexcept;
+    float texelSizeWorldSpace(const math::mat4f& W, const math::mat4f& F) const noexcept;
 
     static constexpr const Segment sBoxSegments[12] = {
             { 0, 1 }, { 1, 3 }, { 3, 2 }, { 2, 0 },
