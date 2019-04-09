@@ -92,6 +92,8 @@ public:
     */
     utils::Entity getWireframe() noexcept;
 
+    filament::Engine* getEngine() const noexcept;
+
     /**
      * Reclaims CPU-side memory for URI strings, binding lists, and raw animation data.
      *

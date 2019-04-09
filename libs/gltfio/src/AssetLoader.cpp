@@ -362,7 +362,6 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity) {
 
 bool FAssetLoader::createPrimitive(const cgltf_primitive* inPrim, Primitive* outPrim,
         const UvMap& uvmap) {
-
     // In glTF, each primitive may or may not have an index buffer. If a primitive does not have an
     // index buffer, we ask the ResourceLoader to generate a trivial index buffer.
     IndexBuffer* indices;
