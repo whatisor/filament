@@ -231,7 +231,7 @@ $ ./build.sh -j release
 
 If you use CMake directly instead of the build script, pass `-DENABLE_JAVA=OFF` to CMake instead.
 
-### Linux
+### Linux(Install these before using build script)
 
 Make sure you've installed the following dependencies:
 
@@ -242,7 +242,16 @@ Make sure you've installed the following dependencies:
 - `ninja-build`
 - `libxi-dev`
 
-After dependencies have been installed, we highly recommend using the [easy build](#easy-build)
+After dependencies have been installed,
+You can need to use `update-alternatives` to both change the default compiler, and point to a
+specific version of clang:
+```
+$ update-alternatives --install /usr/bin/clang clang /usr/bin/clang-7 100
+$ update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-7 100
+$ update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+$ update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+```
+we highly recommend using the [easy build](#easy-build)
 script.
 
 If you'd like to run `cmake` directly rather than using the build script, it can be invoked as
