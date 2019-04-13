@@ -251,8 +251,9 @@ $ update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-7 100
 $ update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
 $ update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 ```
-we highly recommend using the [easy build](#easy-build)
-script.
+
+Using builde script to build:
+env CC=/usr/bin/clang CXX=/usr/bin/clang++ FILAMENT_REQUIRES_CXXABI=true ./build.sh -c release
 
 If you'd like to run `cmake` directly rather than using the build script, it can be invoked as
 follows, with some caveats that are explained further down.
