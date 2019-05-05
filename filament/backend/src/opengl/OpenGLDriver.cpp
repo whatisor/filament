@@ -2600,7 +2600,7 @@ void OpenGLDriver::readStreamPixels(Handle<HwStream> sh,
 void OpenGLDriver::bindUniformBuffer(size_t index, Handle<HwUniformBuffer> ubh) {
     DEBUG_MARKER()
     GLUniformBuffer* ub = handle_cast<GLUniformBuffer *>(ubh);
-    assert(ub->gl.ubo.base == 0);
+    //assert(ub->gl.ubo.base == 0);
     //bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, 0, ub->gl.ubo.capacity);
     CHECK_GL_ERROR(utils::slog.e)
 }
@@ -2611,8 +2611,8 @@ void OpenGLDriver::bindUniformBufferRange(size_t index, Handle<HwUniformBuffer> 
 
     GLUniformBuffer* ub = handle_cast<GLUniformBuffer*>(ubh);
     // TODO: Is this assert really needed? Note that size is only populated for STREAM buffers.
-    assert(size <= ub->gl.ubo.size);
-    assert(ub->gl.ubo.base + offset + size <= ub->gl.ubo.capacity);
+    //assert(size <= ub->gl.ubo.size);
+    //assert(ub->gl.ubo.base + offset + size <= ub->gl.ubo.capacity);
     //bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, ub->gl.ubo.base + offset, size);
     CHECK_GL_ERROR(utils::slog.e)
 }
