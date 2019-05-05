@@ -643,8 +643,8 @@ fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
         material.baseColor = texture(materialParams_texture, getUV0());
-        material.metallic = materialParams.metallic;
-        material.roughness = materialParams.roughness;
+        material.metallic = metallic;
+        material.roughness = roughness;
     }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -750,7 +750,7 @@ Description
     - **Samplers types**: use the parameter name prefixed with `materialParams_`. For instance,
       `materialParams_myTexture`.
     - **Other types**: use the parameter name as the field of a structure called `materialParams`.
-      For instance, `materialParams.myColor`.
+      For instance, `myColor`.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ JSON
 material {
@@ -779,10 +779,10 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor = materialParams.albedo;
+        material.baseColor = albedo;
         material.roughness = texture(materialParams_roughness, getUV0());
-        material.metallic = materialParams.metallicReflectance.x;
-        material.reflectance = materialParams.metallicReflectance.y;
+        material.metallic = metallicReflectance.x;
+        material.reflectance = metallicReflectance.y;
     }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

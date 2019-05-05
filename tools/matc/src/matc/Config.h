@@ -123,7 +123,7 @@ protected:
     bool mDebug = false;
     bool mIsValid = true;
     bool mPrintShaders = false;
-    Optimization mOptimizationLevel = Optimization::PERFORMANCE;
+    Optimization mOptimizationLevel = Optimization::NONE;
     Metadata mReflectionTarget = Metadata::NONE;
     Mode mMode = Mode::MATERIAL;
     Platform mPlatform = Platform::ALL;

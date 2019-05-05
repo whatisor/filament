@@ -206,7 +206,7 @@ class MainActivity : Activity() {
                 // specification.
                 .material("void material(inout MaterialInputs material) {\n" +
                         "    prepareMaterial(material);\n" +
-                        "    material.baseColor.rgb = materialParams.baseColor;\n" +
+                        "    material.baseColor.rgb = baseColor;\n" +
                         "    material.roughness = 0.65;\n" +
                         "    material.metallic = 1.0;\n" +
                         "    material.clearCoat = 1.0;\n" +

@@ -250,25 +250,27 @@ std::ostream& CodeGenerator::generateUniforms(std::ostream& out, ShaderType shad
     Precision uniformPrecision = getDefaultUniformPrecision();
     Precision defaultPrecision = getDefaultPrecision(shaderType);
 
-    out << "\nlayout(";
+    //out << "\nlayout(";
     if (mTargetLanguage == TargetLanguage::SPIRV) {
+        std::cout<<"kn2019 SPIRV\n";
         uint32_t bindingIndex = (uint32_t) binding; // avoid char output
         out << "binding = " << bindingIndex << ", ";
     }
-    out << "std140) uniform " << blockName.c_str() << " {\n";
+    //out << "std140) uniform " << blockName.c_str() << " {\n";
     for (auto const& info : infos) {
         char const* const type = getUniformTypeName(info.type);
         char const* const precision = getUniformPrecisionQualifier(info.type, info.precision,
                 uniformPrecision, defaultPrecision);
+        out <<" uniform ";
         out << "    " << precision;
         if (precision[0] != '\0') out << " ";
-        out << type << " " << info.name.c_str();
+        out <<type << " " << info.name.c_str();
         if (info.size > 1) {
             out << "[" << info.size << "]";
         }
         out << ";\n";
     }
-    out << "} " << instanceName << ";\n";
+    //out << "} " << instanceName << ";\n";
 
     return out;
 }

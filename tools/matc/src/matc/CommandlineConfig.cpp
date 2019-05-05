@@ -219,13 +219,13 @@ bool CommandlineConfig::parse() {
             // These 2 flags are supported for backward compatibility
             case 'O':
             case 'x':
-                mOptimizationLevel = Optimization::PERFORMANCE;
+                mOptimizationLevel = Optimization::NONE;
                 break;
             case 'S':
-                mOptimizationLevel = Optimization::SIZE;
+                mOptimizationLevel = Optimization::NONE;
                 break;
             case 'E':
-                mOptimizationLevel = Optimization::PREPROCESSOR;
+                mOptimizationLevel = Optimization::NONE;
                 break;
             case 'g':
                 mOptimizationLevel = Optimization::NONE;

@@ -82,24 +82,24 @@ static std::string shaderFromKey(const MaterialKey& config) {
     if (config.hasNormalTexture && !config.unlit) {
         shader += "float2 normalUV = ${normal};\n";
         if (config.hasTextureTransforms) {
-            shader += "normalUV = (vec3(normalUV, 1.0) * materialParams.normalUvMatrix).xy;\n";
+            shader += "normalUV = (vec3(normalUV, 1.0) * normalUvMatrix).xy;\n";
         }
         shader += R"SHADER(
             material.normal = texture(materialParams_normalMap, normalUV).xyz * 2.0 - 1.0;
-            material.normal.xy *= materialParams.normalScale;
+            material.normal.xy *= normalScale;
         )SHADER";
     }
 
     shader += R"SHADER(
         prepareMaterial(material);
-        material.baseColor = materialParams.baseColorFactor;
+        material.baseColor = baseColorFactor;
     )SHADER";
 
     if (config.hasBaseColorTexture) {
         shader += "float2 baseColorUV = ${color};\n";
         if (config.hasTextureTransforms) {
             shader += "baseColorUV = (vec3(baseColorUV, 1.0) * "
-                    "materialParams.baseColorUvMatrix).xy;\n";
+                    "baseColorUvMatrix).xy;\n";
         }
         shader += R"SHADER(
             material.baseColor *= texture(materialParams_baseColorMap, baseColorUV);
@@ -119,22 +119,22 @@ static std::string shaderFromKey(const MaterialKey& config) {
     if (!config.unlit) {
         if (config.useSpecularGlossiness) {
             shader += R"SHADER(
-                material.glossiness = materialParams.glossinessFactor;
-                material.specularColor = materialParams.specularFactor;
-                material.emissive.rgb = materialParams.emissiveFactor.rgb;
+                material.glossiness = glossinessFactor;
+                material.specularColor = specularFactor;
+                material.emissive.rgb = emissiveFactor.rgb;
             )SHADER";
         } else {
             shader += R"SHADER(
-                material.roughness = materialParams.roughnessFactor;
-                material.metallic = materialParams.metallicFactor;
-                material.emissive.rgb = materialParams.emissiveFactor.rgb;
+                material.roughness = roughnessFactor;
+                material.metallic = metallicFactor;
+                material.emissive.rgb = emissiveFactor.rgb;
             )SHADER";
         }
         if (config.hasMetallicRoughnessTexture) {
             shader += "float2 metallicRoughnessUV = ${metallic};\n";
             if (config.hasTextureTransforms) {
                 shader += "metallicRoughnessUV = (vec3(metallicRoughnessUV, 1.0) * "
-                        "materialParams.metallicRoughnessUvMatrix).xy;\n";
+                        "metallicRoughnessUvMatrix).xy;\n";
             }
             if (config.useSpecularGlossiness) {
                 shader += R"SHADER(
@@ -153,18 +153,18 @@ static std::string shaderFromKey(const MaterialKey& config) {
         if (config.hasOcclusionTexture) {
             shader += "float2 aoUV = ${ao};\n";
             if (config.hasTextureTransforms) {
-                shader += "aoUV = (vec3(aoUV, 1.0) * materialParams.occlusionUvMatrix).xy;\n";
+                shader += "aoUV = (vec3(aoUV, 1.0) * occlusionUvMatrix).xy;\n";
             }
             shader += R"SHADER(
                 material.ambientOcclusion = texture(materialParams_occlusionMap, aoUV).r *
-                        materialParams.aoStrength;
+                        aoStrength;
             )SHADER";
         }
         if (config.hasEmissiveTexture) {
             shader += "float2 emissiveUV = ${emissive};\n";
             if (config.hasTextureTransforms) {
                 shader += "emissiveUV = (vec3(emissiveUV, 1.0) * "
-                        "materialParams.emissiveUvMatrix).xy;\n";
+                        "emissiveUvMatrix).xy;\n";
             }
             shader += R"SHADER(
                 material.emissive.rgb *= texture(materialParams_emissiveMap, emissiveUV).rgb;

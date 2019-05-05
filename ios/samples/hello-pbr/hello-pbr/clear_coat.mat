@@ -13,7 +13,7 @@ fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
 
-        material.baseColor.rgb = materialParams.baseColor;
+        material.baseColor.rgb = baseColor;
 
         // To create a metallic paint-like material we want
         // a rough base metallic layer and a glossy clear coat

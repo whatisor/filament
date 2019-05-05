@@ -80,7 +80,7 @@ protected:
     using ShaderModel = filament::backend::ShaderModel;
     Platform mPlatform = Platform::DESKTOP;
     TargetApi mTargetApi = TargetApi::OPENGL;
-    Optimization mOptimization = Optimization::PERFORMANCE;
+    Optimization mOptimization = Optimization::NONE;
     bool mPrintShaders = false;
     utils::bitset32 mShaderModels;
     struct CodeGenParams {

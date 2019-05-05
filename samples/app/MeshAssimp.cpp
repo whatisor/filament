@@ -129,7 +129,7 @@ std::string shaderFromConfig(MaterialConfig config) {
     shader += R"SHADER(
         prepareMaterial(material);
         material.baseColor = texture(materialParams_baseColorMap, baseColorUV);
-        material.baseColor *= materialParams.baseColorFactor;
+        material.baseColor *= baseColorFactor;
     )SHADER";
 
     if (config.alphaMode == AlphaMode::TRANSPARENT) {
@@ -141,11 +141,11 @@ std::string shaderFromConfig(MaterialConfig config) {
     if (!config.unlit) {
         shader += R"SHADER(
             vec4 metallicRoughness = texture(materialParams_metallicRoughnessMap, metallicRoughnessUV);
-            material.roughness = materialParams.roughnessFactor * metallicRoughness.g;
-            material.metallic = materialParams.metallicFactor * metallicRoughness.b;
+            material.roughness = roughnessFactor * metallicRoughness.g;
+            material.metallic = metallicFactor * metallicRoughness.b;
             material.ambientOcclusion = texture(materialParams_aoMap, aoUV).r;
             material.emissive.rgb = texture(materialParams_emissiveMap, emissiveUV).rgb;
-            material.emissive.rgb *= materialParams.emissiveFactor.rgb;
+            material.emissive.rgb *= emissiveFactor.rgb;
 
             // The opinionated lighting model specified by glTF does not account for energy
             // compensation, using this value basically disables it:

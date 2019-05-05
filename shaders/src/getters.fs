@@ -31,12 +31,12 @@ HIGHP vec3 getLightSpacePosition() {
 
 #if defined(BLEND_MODE_MASKED)
 float getMaskThreshold() {
-    return materialParams._maskThreshold;
+    return _maskThreshold;
 }
 #endif
 
 #if defined(MATERIAL_HAS_DOUBLE_SIDED_CAPABILITY)
 bool isDoubleSided() {
-    return materialParams._doubleSided;
+    return _doubleSided;
 }
 #endif

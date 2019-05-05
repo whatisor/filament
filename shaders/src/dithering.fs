@@ -21,7 +21,7 @@
 
 float triangleNoise(HIGHP vec2 n) {
     // triangle noise, in [-1.0..1.0[ range
-    n += vec2(0.07 * fract(postProcessUniforms.time));
+    n += vec2(0.07 * fract(timePostProcessUniforms));
     n  = fract(n * vec2(5.3987, 5.4421));
     n += dot(n.yx, n.xy + vec2(21.5351, 14.3137));
 
@@ -40,7 +40,7 @@ float interleavedGradientNoise(const HIGHP vec2 n) {
 
 vec4 Dither_InterleavedGradientNoise(vec4 rgba) {
     // Jimenez 2014, "Next Generation Post-Processing in Call of Duty"
-    float noise = interleavedGradientNoise(gl_FragCoord.xy + postProcessUniforms.time);
+    float noise = interleavedGradientNoise(gl_FragCoord.xy + timePostProcessUniforms);
     // remap from [0..1[ to [-1..1[
     noise = (noise * 2.0) - 1.0;
     return vec4(rgba.rgb + noise / 255.0, rgba.a);
@@ -48,7 +48,7 @@ vec4 Dither_InterleavedGradientNoise(vec4 rgba) {
 
 vec4 Dither_Vlachos(vec4 rgba) {
     // Vlachos 2016, "Advanced VR Rendering"
-    HIGHP vec3 noise = vec3(dot(vec2(171.0, 231.0), gl_FragCoord.xy + postProcessUniforms.time));
+    HIGHP vec3 noise = vec3(dot(vec2(171.0, 231.0), gl_FragCoord.xy + timePostProcessUniforms));
     noise = fract(noise / vec3(103.0, 71.0, 97.0));
     // remap from [0..1[ to [-1..1[
     noise = (noise * 2.0) - 1.0;
@@ -75,7 +75,7 @@ vec4 Dither_TriangleNoiseRGB(vec4 rgba) {
 //------------------------------------------------------------------------------
 
 /**
- * Dithers the specified RGB color based on the current time and fragment
+ * Dithers the specified RGB color based on the current timePostProcessUniforms and fragment
  * coordinates the input must be in the final color space (including OECF).
  * This dithering function assumes we are dithering to an 8-bit target.
  * This function dithers the alpha channel assuming premultiplied output

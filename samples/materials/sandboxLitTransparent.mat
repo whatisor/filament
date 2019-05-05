@@ -41,13 +41,13 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor.rgb = materialParams.baseColor * materialParams.alpha;
-        material.baseColor.a = materialParams.alpha;
-        material.roughness = materialParams.roughness;
-        material.metallic = materialParams.metallic;
-        material.reflectance = materialParams.reflectance;
-        material.clearCoat = materialParams.clearCoat;
-        material.clearCoatRoughness = materialParams.clearCoatRoughness;
-        material.anisotropy = materialParams.anisotropy;
+        material.baseColor.rgb = baseColor * alpha;
+        material.baseColor.a = alpha;
+        material.roughness = roughness;
+        material.metallic = metallic;
+        material.reflectance = reflectance;
+        material.clearCoat = clearCoat;
+        material.clearCoatRoughness = clearCoatRoughness;
+        material.anisotropy = anisotropy;
     }
 }

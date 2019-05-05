@@ -203,7 +203,6 @@ const std::string ShaderGenerator::createVertexProgram(filament::backend::Shader
     }
 
     cg.generateEpilog(vs);
-
     return vs.str();
 }
 

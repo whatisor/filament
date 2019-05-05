@@ -36,12 +36,12 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor.rgb = materialParams.baseColor;
-        material.roughness = materialParams.roughness;
-        material.metallic = materialParams.metallic;
-        material.reflectance = materialParams.reflectance;
-        material.thickness = materialParams.thickness;
-        material.subsurfacePower = materialParams.subsurfacePower;
-        material.subsurfaceColor = materialParams.subsurfaceColor;
+        material.baseColor.rgb = baseColor;
+        material.roughness = roughness;
+        material.metallic = metallic;
+        material.reflectance = reflectance;
+        material.thickness = thickness;
+        material.subsurfacePower = subsurfacePower;
+        material.subsurfaceColor = subsurfaceColor;
     }
 }

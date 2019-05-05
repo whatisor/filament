@@ -24,9 +24,9 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor.rgb = materialParams.baseColor;
-        material.metallic = materialParams.metallic;
-        material.roughness = materialParams.roughness;
-        material.reflectance = materialParams.reflectance;
+        material.baseColor.rgb = baseColor;
+        material.metallic = metallic;
+        material.roughness = roughness;
+        material.reflectance = reflectance;
     }
 }

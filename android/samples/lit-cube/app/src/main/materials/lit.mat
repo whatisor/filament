@@ -46,8 +46,8 @@ fragment {
         prepareMaterial(material);
 
         // Nothing fancy here, we simply copy the parameters
-        material.baseColor.rgb = materialParams.baseColor;
-        material.roughness = materialParams.roughness;
-        material.metallic = materialParams.metallic;
+        material.baseColor.rgb = baseColor;
+        material.roughness = roughness;
+        material.metallic = metallic;
     }
 }

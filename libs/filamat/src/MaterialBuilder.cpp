@@ -64,8 +64,7 @@ void MaterialBuilderBase::prepare() {
     }
 
     // OpenGL is a special case. If we're doing any optimization, then we need to go to Spir-V.
-    TargetLanguage glTargetLanguage = mOptimization > MaterialBuilder::Optimization::PREPROCESSOR ?
-            TargetLanguage::SPIRV : TargetLanguage::GLSL;
+    TargetLanguage glTargetLanguage = TargetLanguage::GLSL;
 
     // Build a list of codegen permutations, which is useful across all types of material builders.
     // The shader model loop starts at 1 to skip ShaderModel::UNKNOWN.
@@ -76,8 +75,8 @@ void MaterialBuilderBase::prepare() {
         switch (mTargetApi) {
             case TargetApi::ALL:
                 mCodeGenPermutations.push_back({i, TargetApi::OPENGL, glTargetLanguage});
-                mCodeGenPermutations.push_back({i, TargetApi::VULKAN, TargetLanguage::SPIRV});
-                mCodeGenPermutations.push_back({i, TargetApi::METAL, TargetLanguage::SPIRV});
+                //mCodeGenPermutations.push_back({i, TargetApi::VULKAN, TargetLanguage::SPIRV});
+                //mCodeGenPermutations.push_back({i, TargetApi::METAL, TargetLanguage::SPIRV});
                 break;
             case TargetApi::OPENGL:
                 mCodeGenPermutations.push_back({i, TargetApi::OPENGL, glTargetLanguage});
@@ -357,10 +356,17 @@ bool MaterialBuilder::runStaticCodeAnalysis() noexcept {
 
     std::string shaderCode = peek(ShaderType::VERTEX, model, mProperties);
     bool result = glslTools.analyzeVertexShader(shaderCode, model, mTargetApi);
-    if (!result) return false;
+    // if (!result) {
+    //     std::cout<<"kn2019 "<<shaderCode<<std::endl;
+    //     return false;
+    // }
 
     shaderCode = peek(ShaderType::FRAGMENT, model, mProperties);
     result = glslTools.analyzeFragmentShader(shaderCode, model, mTargetApi);
+    // if (!result) {
+    //     std::cout<<"kn2019 "<<shaderCode<<std::endl;
+    //     return false;
+    // }
     return result;
 }
 
@@ -558,7 +564,7 @@ Package MaterialBuilder::build() noexcept {
                 std::string vs = sg.createVertexProgram(
                         shaderModel, targetApi, targetLanguage, info, k,
                         mInterpolation, mVertexDomain);
-//std::cout<<"vs "<<vs<<std::endl;
+utils::slog.e <<"vs "<<vs.c_str();
                 bool ok = postProcessor.process(vs, filament::backend::ShaderType::VERTEX,
                         shaderModel, &vs, pSpirv, pMsl);
                 if (!ok) {
@@ -606,7 +612,7 @@ Package MaterialBuilder::build() noexcept {
                 // Fragment Shader
                 std::string fs = sg.createFragmentProgram(
                         shaderModel, targetApi, targetLanguage, info, k, mInterpolation);
-//std::cout<<"fs "<<fs<<std::endl;
+utils::slog.e <<"fs "<<fs.c_str();
                 bool ok = postProcessor.process(fs, filament::backend::ShaderType::FRAGMENT,
                         shaderModel, &fs, pSpirv, pMsl);
                 if (!ok) {

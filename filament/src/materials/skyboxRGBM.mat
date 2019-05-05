@@ -25,14 +25,7 @@ fragment {
         prepareMaterial(material);
         vec3 sky = decodeRGBM(texture(materialParams_skybox, variable_eyeDirection.xyz));
         sky *= iblLuminance;
-        if (materialParams.showSun && sun.w >= 0.0f) {
-            vec3 direction = normalize(variable_eyeDirection.xyz);
-            vec3 sun = lightColorIntensity.rgb * lightColorIntensity.a;
-            float cosAngle = dot(direction, lightDirection);
-            float x = (cosAngle - sun.x) * sun.z;
-            float gradient = pow(1.0 - saturate(x), sun.w);
-            sky += sun * gradient;
-        }
+
         material.baseColor = vec4(sky, 1.0);
     }
 }

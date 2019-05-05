@@ -33,10 +33,10 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor.rgb = materialParams.baseColor;
-        material.roughness = materialParams.roughness;
-        material.clearCoat = materialParams.clearCoat;
-        material.clearCoatRoughness = materialParams.clearCoatRoughness;
+        material.baseColor.rgb = baseColor;
+        material.roughness = roughness;
+        material.clearCoat = clearCoat;
+        material.clearCoatRoughness = clearCoatRoughness;
     }
 }
 ```

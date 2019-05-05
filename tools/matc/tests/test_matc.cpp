@@ -183,9 +183,9 @@ static std::string jsonMaterialSource(R"(
         vec3 normal = vec3(0.0, 0.0, 1.0);
         material.normal = normal;
         prepareMaterial(material);
-        material.baseColor = vec4(1.0, 1.0, 1.0, 1.0) * materialParams.baseColorFactor;
-        material.metallic = materialParams.metallicFactor;
-        material.roughness = materialParams.roughnessFactor;
+        material.baseColor = vec4(1.0, 1.0, 1.0, 1.0) * baseColorFactor;
+        material.metallic = metallicFactor;
+        material.roughness = roughnessFactor;
         material.ambientOcclusion = 1.0;
         material.emissive = vec4(0.0);
         material.reflectance = 0.5;
