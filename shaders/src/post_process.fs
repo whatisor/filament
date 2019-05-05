@@ -45,7 +45,7 @@ vec4 PostProcess_AntiAliasing() {
     HIGHP vec2 fboSize = vec2(textureSize(postProcess_colorBuffer, 0));
     HIGHP vec2 invSize = 1.0 / fboSize;
     HIGHP vec2 halfTexel = 0.5 * invSize;
-    HIGHP vec2 viewportSize = frameUniforms.resolution.xy;
+    HIGHP vec2 viewportSize = resolution.xy;
 
     // The clamp needs to be over-aggressive by a half-texel due to bilinear sampling.
     HIGHP vec2 excessSize = 0.5 + fboSize - viewportSize;

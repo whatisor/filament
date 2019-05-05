@@ -3,17 +3,17 @@
 //------------------------------------------------------------------------------
 
 mat4 getLightFromWorldMatrix() {
-    return frameUniforms.lightFromWorldMatrix;
+    return lightFromWorldMatrix;
 }
 
 /** @public-api */
 mat4 getWorldFromModelMatrix() {
-    return objectUniforms.worldFromModelMatrix;
+    return worldFromModelMatrix;
 }
 
 /** @public-api */
 mat3 getWorldFromModelNormalMatrix() {
-    return objectUniforms.worldFromModelNormalMatrix;
+    return worldFromModelNormalMatrix;
 }
 
 //------------------------------------------------------------------------------
@@ -22,8 +22,8 @@ mat3 getWorldFromModelNormalMatrix() {
 
 #if defined(HAS_SKINNING)
 vec3 mulBoneNormal(vec3 n, uint i) {
-    vec4 q  = bonesUniforms.bones[i + 0u];
-    vec3 is = bonesUniforms.bones[i + 3u].xyz;
+    vec4 q  = bones[i + 0u];
+    vec3 is = bones[i + 3u].xyz;
 
     // apply the inverse of the non-uniform scales
     n *= is;
@@ -34,9 +34,9 @@ vec3 mulBoneNormal(vec3 n, uint i) {
 }
 
 vec3 mulBoneVertice(vec3 v, uint i) {
-    vec4 q = bonesUniforms.bones[i + 0u];
-    vec3 t = bonesUniforms.bones[i + 1u].xyz;
-    vec3 s = bonesUniforms.bones[i + 2u].xyz;
+    vec4 q = bones[i + 0u];
+    vec3 t = bones[i + 1u].xyz;
+    vec3 s = bones[i + 2u].xyz;
 
     // apply the non-uniform scales
     v *= s;

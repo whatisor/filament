@@ -57,12 +57,12 @@ vec4 Dither_Vlachos(vec4 rgba) {
 
 vec4 Dither_TriangleNoise(vec4 rgba) {
     // Gjøl 2016, "Banding in Games: A Noisy Rant"
-    return rgba + triangleNoise(gl_FragCoord.xy * frameUniforms.resolution.zw) / 255.0;
+    return rgba + triangleNoise(gl_FragCoord.xy * resolution.zw) / 255.0;
 }
 
 vec4 Dither_TriangleNoiseRGB(vec4 rgba) {
     // Gjøl 2016, "Banding in Games: A Noisy Rant"
-    vec2 uv = gl_FragCoord.xy * frameUniforms.resolution.zw;
+    vec2 uv = gl_FragCoord.xy * resolution.zw;
     vec3 dither = vec3(
             triangleNoise(uv),
             triangleNoise(uv + 0.1337),

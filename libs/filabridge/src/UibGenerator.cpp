@@ -31,7 +31,7 @@ static_assert(sizeof(PerRenderableUib) % 256 == 0,
 static_assert(CONFIG_MAX_BONE_COUNT * sizeof(PerRenderableUibBone) <= 16384,
         "Bones exceed max UBO size");
 
-
+//kn2019 uniform block from webgl 2.0
 UniformInterfaceBlock const& UibGenerator::getPerViewUib() noexcept  {
     // IMPORTANT NOTE: Respect std140 layout, don't update without updating Engine::PerViewUib
     static UniformInterfaceBlock uib = UniformInterfaceBlock::Builder()

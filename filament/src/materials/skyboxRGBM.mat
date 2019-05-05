@@ -24,13 +24,13 @@ fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
         vec3 sky = decodeRGBM(texture(materialParams_skybox, variable_eyeDirection.xyz));
-        sky *= frameUniforms.iblLuminance;
-        if (materialParams.showSun && frameUniforms.sun.w >= 0.0f) {
+        sky *= iblLuminance;
+        if (materialParams.showSun && sun.w >= 0.0f) {
             vec3 direction = normalize(variable_eyeDirection.xyz);
-            vec3 sun = frameUniforms.lightColorIntensity.rgb * frameUniforms.lightColorIntensity.a;
-            float cosAngle = dot(direction, frameUniforms.lightDirection);
-            float x = (cosAngle - frameUniforms.sun.x) * frameUniforms.sun.z;
-            float gradient = pow(1.0 - saturate(x), frameUniforms.sun.w);
+            vec3 sun = lightColorIntensity.rgb * lightColorIntensity.a;
+            float cosAngle = dot(direction, lightDirection);
+            float x = (cosAngle - sun.x) * sun.z;
+            float gradient = pow(1.0 - saturate(x), sun.w);
             sky += sun * gradient;
         }
         material.baseColor = vec4(sky, 1.0);

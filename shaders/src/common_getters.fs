@@ -4,65 +4,65 @@
 
 /** @public-api */
 mat4 getViewFromWorldMatrix() {
-    return frameUniforms.viewFromWorldMatrix;
+    return viewFromWorldMatrix;
 }
 
 /** @public-api */
 mat4 getWorldFromViewMatrix() {
-    return frameUniforms.worldFromViewMatrix;
+    return worldFromViewMatrix;
 }
 
 /** @public-api */
 mat4 getClipFromViewMatrix() {
-    return frameUniforms.clipFromViewMatrix;
+    return clipFromViewMatrix;
 }
 
 /** @public-api */
 mat4 getViewFromClipMatrix() {
-    return frameUniforms.viewFromClipMatrix;
+    return viewFromClipMatrix;
 }
 
 /** @public-api */
 mat4 getClipFromWorldMatrix() {
-    return frameUniforms.clipFromWorldMatrix;
+    return clipFromWorldMatrix;
 }
 
 /** @public-api */
 mat4 getWorldFromClipMatrix() {
-    return frameUniforms.worldFromClipMatrix;
+    return worldFromClipMatrix;
 }
 
 /** @public-api */
 vec4 getResolution() {
-    return frameUniforms.resolution;
+    return resolution;
 }
 
 /** @public-api */
 vec3 getWorldCameraPosition() {
-    return frameUniforms.cameraPosition;
+    return cameraPosition;
 }
 
 /** @public-api */
 float getTime() {
-    return frameUniforms.time;
+    return time;
 }
 
 /** @public-api */
 HIGHP vec4 getUserTime() {
-    return frameUniforms.userTime;
+    return userTime;
 }
 
 /** @public-api **/
 HIGHP float getUserTimeMod(float m) {
-    return mod(mod(frameUniforms.userTime.x, m) + mod(frameUniforms.userTime.y, m), m);
+    return mod(mod(userTime.x, m) + mod(userTime.y, m), m);
 }
 
 /** @public-api */
 float getExposure() {
-    return frameUniforms.exposure;
+    return exposure;
 }
 
 /** @public-api */
 float getEV100() {
-    return frameUniforms.ev100;
+    return ev100;
 }

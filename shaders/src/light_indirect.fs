@@ -63,18 +63,18 @@ vec3 prefilteredDFG(float roughness, float NoV) {
 
 vec3 Irradiance_SphericalHarmonics(const vec3 n) {
     return max(
-          frameUniforms.iblSH[0]
+          iblSH[0]
 #if SPHERICAL_HARMONICS_BANDS >= 2
-        + frameUniforms.iblSH[1] * (n.y)
-        + frameUniforms.iblSH[2] * (n.z)
-        + frameUniforms.iblSH[3] * (n.x)
+        + iblSH[1] * (n.y)
+        + iblSH[2] * (n.z)
+        + iblSH[3] * (n.x)
 #endif
 #if SPHERICAL_HARMONICS_BANDS >= 3
-        + frameUniforms.iblSH[4] * (n.y * n.x)
-        + frameUniforms.iblSH[5] * (n.y * n.z)
-        + frameUniforms.iblSH[6] * (3.0 * n.z * n.z - 1.0)
-        + frameUniforms.iblSH[7] * (n.z * n.x)
-        + frameUniforms.iblSH[8] * (n.x * n.x - n.y * n.y)
+        + iblSH[4] * (n.y * n.x)
+        + iblSH[5] * (n.y * n.z)
+        + iblSH[6] * (3.0 * n.z * n.z - 1.0)
+        + iblSH[7] * (n.z * n.x)
+        + iblSH[8] * (n.x * n.x - n.y * n.y)
 #endif
         , 0.0);
 }
@@ -391,5 +391,5 @@ void evaluateIBL(const MaterialInputs material, const PixelParams pixel, inout v
     evaluateSubsurfaceIBL(pixel, diffuseIrradiance, Fd, Fr);
 
     // Note: iblLuminance is already premultiplied by the exposure
-    color.rgb += (Fd + Fr) * frameUniforms.iblLuminance;
+    color.rgb += (Fd + Fr) * iblLuminance;
 }

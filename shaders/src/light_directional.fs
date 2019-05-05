@@ -4,13 +4,13 @@
 
 vec3 sampleSunAreaLight(const vec3 lightDirection) {
 #if !defined(TARGET_MOBILE)
-    if (frameUniforms.sun.w >= 0.0) {
+    if (sun.w >= 0.0) {
         // simulate sun as disc area light
         float LoR = dot(lightDirection, shading_reflected);
-        float d = frameUniforms.sun.x;
+        float d = sun.x;
         HIGHP vec3 s = shading_reflected - LoR * lightDirection;
         return LoR < d ?
-                normalize(lightDirection * d + normalize(s) * frameUniforms.sun.y) : shading_reflected;
+                normalize(lightDirection * d + normalize(s) * sun.y) : shading_reflected;
     }
 #endif
     return lightDirection;
@@ -19,8 +19,8 @@ vec3 sampleSunAreaLight(const vec3 lightDirection) {
 Light getDirectionalLight() {
     Light light;
     // note: lightColorIntensity.w is always premultiplied by the exposure
-    light.colorIntensity = frameUniforms.lightColorIntensity;
-    light.l = sampleSunAreaLight(frameUniforms.lightDirection);
+    light.colorIntensity = lightColorIntensity;
+    light.l = sampleSunAreaLight(lightDirection);
     light.attenuation = 1.0;
     light.NoL = saturate(dot(shading_normal, light.l));
     return light;

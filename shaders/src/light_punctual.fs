@@ -24,12 +24,12 @@ struct FroxelParams {
 uvec3 getFroxelCoords(const vec3 fragCoords) {
     uvec3 froxelCoord;
 
-    froxelCoord.xy = uvec2((fragCoords.xy - frameUniforms.origin.xy) *
-            vec2(frameUniforms.oneOverFroxelDimension, frameUniforms.oneOverFroxelDimensionY));
+    froxelCoord.xy = uvec2((fragCoords.xy - origin.xy) *
+            vec2(oneOverFroxelDimension, oneOverFroxelDimensionY));
 
     froxelCoord.z = uint(max(0.0,
-            log2(frameUniforms.zParams.x * fragCoords.z + frameUniforms.zParams.y) *
-                    frameUniforms.zParams.z + frameUniforms.zParams.w));
+            log2(zParams.x * fragCoords.z + zParams.y) *
+                    zParams.z + zParams.w));
 
     return froxelCoord;
 }
@@ -42,9 +42,9 @@ uvec3 getFroxelCoords(const vec3 fragCoords) {
  */
 uint getFroxelIndex(const vec3 fragCoords) {
     uvec3 froxelCoord = getFroxelCoords(fragCoords);
-    return froxelCoord.x * frameUniforms.fParamsX +
-           froxelCoord.y * frameUniforms.fParams.x +
-           froxelCoord.z * frameUniforms.fParams.y;
+    return froxelCoord.x * fParamsX +
+           froxelCoord.y * fParams.x +
+           froxelCoord.z * fParams.y;
 }
 
 /**
@@ -126,13 +126,13 @@ Light getSpotLight(uint index) {
     ivec2 texCoord = getRecordTexCoord(index);
     uint lightIndex = texelFetch(light_records, texCoord, 0).r;
 
-    HIGHP vec4 positionFalloff = lightsUniforms.lights[lightIndex][0];
-    HIGHP vec4 colorIntensity  = lightsUniforms.lights[lightIndex][1];
-          vec4 directionIES    = lightsUniforms.lights[lightIndex][2];
-          vec2 scaleOffset     = lightsUniforms.lights[lightIndex][3].xy;
+    HIGHP vec4 positionFalloff = lights[lightIndex][0];
+    HIGHP vec4 colorIntensity  = lights[lightIndex][1];
+          vec4 directionIES    = lights[lightIndex][2];
+          vec2 scaleOffset     = lights[lightIndex][3].xy;
 
     light.colorIntensity.rgb = colorIntensity.rgb;
-    light.colorIntensity.w = computePreExposedIntensity(colorIntensity.w, frameUniforms.exposure);
+    light.colorIntensity.w = computePreExposedIntensity(colorIntensity.w, exposure);
 
     setupPunctualLight(light, positionFalloff);
 
@@ -154,11 +154,11 @@ Light getPointLight(uint index) {
     ivec2 texCoord = getRecordTexCoord(index);
     uint lightIndex = texelFetch(light_records, texCoord, 0).r;
 
-    HIGHP vec4 positionFalloff = lightsUniforms.lights[lightIndex][0];
-    HIGHP vec4 colorIntensity  = lightsUniforms.lights[lightIndex][1];
+    HIGHP vec4 positionFalloff = lights[lightIndex][0];
+    HIGHP vec4 colorIntensity  = lights[lightIndex][1];
 
     light.colorIntensity.rgb = colorIntensity.rgb;
-    light.colorIntensity.w = computePreExposedIntensity(colorIntensity.w, frameUniforms.exposure);
+    light.colorIntensity.w = computePreExposedIntensity(colorIntensity.w, exposure);
 
     setupPunctualLight(light, positionFalloff);
 

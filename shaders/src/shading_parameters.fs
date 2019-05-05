@@ -33,7 +33,7 @@ void computeShadingParams() {
 #endif
 
     shading_position = vertex_worldPosition;
-    shading_view = normalize(frameUniforms.cameraPosition - shading_position);
+    shading_view = normalize(cameraPosition - shading_position);
 }
 
 /**

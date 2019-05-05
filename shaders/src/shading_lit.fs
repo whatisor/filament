@@ -184,7 +184,7 @@ vec4 evaluateMaterial(const MaterialInputs material) {
     // It is defined as a color + exposure compensation
     HIGHP vec4 emissive = material.emissive;
     HIGHP float attenuation = computePreExposedIntensity(
-            pow(2.0, frameUniforms.ev100 + emissive.w - 3.0), frameUniforms.exposure);
+            pow(2.0, ev100 + emissive.w - 3.0), exposure);
     color.rgb += emissive.rgb * attenuation;
 #endif
 
