@@ -558,6 +558,7 @@ Package MaterialBuilder::build() noexcept {
                 std::string vs = sg.createVertexProgram(
                         shaderModel, targetApi, targetLanguage, info, k,
                         mInterpolation, mVertexDomain);
+//std::cout<<"vs "<<vs<<std::endl;
                 bool ok = postProcessor.process(vs, filament::backend::ShaderType::VERTEX,
                         shaderModel, &vs, pSpirv, pMsl);
                 if (!ok) {
@@ -605,7 +606,7 @@ Package MaterialBuilder::build() noexcept {
                 // Fragment Shader
                 std::string fs = sg.createFragmentProgram(
                         shaderModel, targetApi, targetLanguage, info, k, mInterpolation);
-
+//std::cout<<"fs "<<fs<<std::endl;
                 bool ok = postProcessor.process(fs, filament::backend::ShaderType::FRAGMENT,
                         shaderModel, &fs, pSpirv, pMsl);
                 if (!ok) {

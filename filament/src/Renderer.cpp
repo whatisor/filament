@@ -169,6 +169,7 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
     uint8_t msaa = view.getSampleCount();
     float2 scale = view.updateScale(mFrameInfoManager.getLastFrameTime());
     if (!hasPostProcess) {
+        std::cout<<"kn2019 No post process\n";
         // dynamic scaling and FXAA are part of the post-process phase and can't happen if
         // it's disabled.
         fxaa = false;
@@ -215,6 +216,7 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
      */
 
     if (view.hasShadowing()) {
+        std::cout<<"kn2019 WITH Shadowing\n";
         view.getShadowMap().render(driver, pass, view);
         commands.clear();
     }
@@ -225,7 +227,7 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
 
     FrameGraph fg;
 
-    const TextureFormat hdrFormat = getHdrFormat(view);
+    const TextureFormat hdrFormat = TextureFormat::RGBA8;//getHdrFormat(view);
 
     // FIXME: we use "hasPostProcess" as a proxy for deciding if we need a depth-buffer or not
     //        historically this has been true, but it's definitely wrong.
@@ -252,6 +254,7 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
 
     TargetBufferFlags clearFlags = view.getClearFlags();
     if (hasPostProcess) {
+        //std::cout<<"WITH hasPostProcess\n";
         // When using a post-process pass, composition of Views is done during the post-process
         // pass, which means it's NOT done here. For this reason, we need to clear the depth/stencil
         // buffers unconditionally. The color buffer must be cleared to what the user asked for,
@@ -332,18 +335,25 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
             TextureFormat::RGBA8 : getLdrFormat(); // e.g. RGB8 or RGBA8
 
     if (hasPostProcess) {
+
         // FIXME: currently we can't render a view on top of another one (with transparency) if
         //        any post-processing is performed on that view -- this is because post processing
         //        uses intermediary buffers which are not blended back (they're blitted).
 
         if (toneMapping) {
+
+        //std::cout<<"kn2019 WITH toneMapping\n";
             input = ppm.toneMapping(fg, input, ldrFormat, dithering, translucent);
         }
         if (fxaa) {
-            input = ppm.fxaa(fg, input, ldrFormat, !toneMapping || translucent);
+
+        //std::cout<<"kn 2019 WITH fxaa\n";
+            //input = ppm.fxaa(fg, input, ldrFormat, !toneMapping || translucent);
         }
         if (scaled) {
-            input = ppm.dynamicScaling(fg, input, ldrFormat);
+
+            std::cout<<"WITH dynamicScaling\n";
+            //input = ppm.dynamicScaling(fg, input, ldrFormat);
         }
     }
 
@@ -353,7 +363,7 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
     //        only happen if no other post-processing above took place (in which case we would
     //        already be using an intermediate buffer)
     if ((msaa > 1 || colorPassNeedsDepthBuffer) && input == colorPass.getData().color) {
-        input = ppm.dynamicScaling(fg, input, ldrFormat);
+        //input = ppm.dynamicScaling(fg, input, ldrFormat);
     }
 
     fg.present(input);
@@ -364,7 +374,7 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
     //fg.export_graphviz(slog.d);
     fg.execute(driver);
 
-    recordHighWatermark(pass.getCommandsHighWatermark());
+    //recordHighWatermark(pass.getCommandsHighWatermark());
 }
 
 void FRenderer::mirrorFrame(FSwapChain* dstSwapChain, filament::Viewport const& dstViewport,

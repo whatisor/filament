@@ -423,6 +423,9 @@ NOTE the other tuning knobs are now in the shader function inputs!
 /*--------------------------------------------------------------------------*/
 #if (FXAA_GLSL_130 == 1)
     // Requires "#version 130" or better
+    //kn2019
+    //#define textureLod texture2D
+    //#define textureLodOffset texture2D
     #define FxaaTexTop(t, p) textureLod(t, p, 0.0)
     #define FxaaTexOff(t, p, o, r) textureLodOffset(t, p, 0.0, o)
     #if (FXAA_GATHER4_ALPHA == 1)

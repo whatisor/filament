@@ -169,7 +169,8 @@ bool GLSLTools::findProperties(const filamat::MaterialBuilder& builderIn,
         utils::slog.e << tShader.getInfoLog() << utils::io::endl;
         return false;
     }
-
+//kn2019
+ //std::cout <<"Error shader:\n" <<shaderCode << std::endl;
     TIntermNode* rootNode = tShader.getIntermediate()->getTreeRoot();
 
     TIntermAggregate* functionMaterialDef = ASTUtils::getFunctionByNameOnly("material", *rootNode);

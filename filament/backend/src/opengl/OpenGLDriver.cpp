@@ -130,7 +130,7 @@ OpenGLDriver::OpenGLDriver(OpenGLPlatform* platform) noexcept
     glGetIntegerv(GL_MINOR_VERSION, &minor);
     glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &gets.max_renderbuffer_size);
     glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &gets.max_uniform_block_size);
-    glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &gets.uniform_buffer_offset_alignment);
+    //glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &gets.uniform_buffer_offset_alignment);
 
 #ifndef NDEBUG
     slog.i
@@ -403,6 +403,7 @@ void OpenGLDriver::unbindSampler(GLuint sampler) noexcept {
 }
 
 void OpenGLDriver::bindBuffer(GLenum target, GLuint buffer) noexcept {
+    //std::cout<<"kn2019 "<<__FUNCTION__<<std::endl;
     size_t targetIndex = getIndexForBufferTarget(target);
     if (target == GL_ELEMENT_ARRAY_BUFFER) {
         // GL_ELEMENT_ARRAY_BUFFER is a special case, where the currently bound VAO remembers
@@ -425,6 +426,7 @@ void OpenGLDriver::bindBuffer(GLenum target, GLuint buffer) noexcept {
 
 void OpenGLDriver::bindBufferRange(GLenum target, GLuint index, GLuint buffer,
         GLintptr offset, GLsizeiptr size) noexcept {
+    //std::cout<<"kn2019 "<<__FUNCTION__<<std::endl;
     size_t targetIndex = getIndexForBufferTarget(target);
     assert(targetIndex <= 1); // sanity check
 
@@ -934,9 +936,9 @@ void OpenGLDriver::createUniformBufferR(
     DEBUG_MARKER()
 
     GLUniformBuffer* ub = construct<GLUniformBuffer>(ubh, size, usage);
-    glGenBuffers(1, &ub->gl.ubo.id);
-    bindBuffer(GL_UNIFORM_BUFFER, ub->gl.ubo.id);
-    glBufferData(GL_UNIFORM_BUFFER, size, nullptr, getBufferUsage(usage));
+    //glGenBuffers(1, &ub->gl.ubo.id);
+    //bindBuffer(GL_UNIFORM_BUFFER, ub->gl.ubo.id);
+    //glBufferData(GL_UNIFORM_BUFFER, size, nullptr, getBufferUsage(usage));
     CHECK_GL_ERROR(utils::slog.e)
 }
 
@@ -1745,13 +1747,12 @@ void OpenGLDriver::updateIndexBuffer(
 
 void OpenGLDriver::loadUniformBuffer(Handle<HwUniformBuffer> ubh, BufferDescriptor&& p) {
     DEBUG_MARKER()
-
     GLUniformBuffer* ub = handle_cast<GLUniformBuffer *>(ubh);
     assert(ub);
 
     if (p.size > 0) {
-        updateBuffer(GL_UNIFORM_BUFFER, &ub->gl.ubo, p,
-                (uint32_t)gets.uniform_buffer_offset_alignment);
+        //updateBuffer(GL_UNIFORM_BUFFER, &ub->gl.ubo, p,
+        //        (uint32_t)gets.uniform_buffer_offset_alignment);
     }
     scheduleDestroy(std::move(p));
 }
@@ -2600,7 +2601,7 @@ void OpenGLDriver::bindUniformBuffer(size_t index, Handle<HwUniformBuffer> ubh) 
     DEBUG_MARKER()
     GLUniformBuffer* ub = handle_cast<GLUniformBuffer *>(ubh);
     assert(ub->gl.ubo.base == 0);
-    bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, 0, ub->gl.ubo.capacity);
+    //bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, 0, ub->gl.ubo.capacity);
     CHECK_GL_ERROR(utils::slog.e)
 }
 
@@ -2612,7 +2613,7 @@ void OpenGLDriver::bindUniformBufferRange(size_t index, Handle<HwUniformBuffer> 
     // TODO: Is this assert really needed? Note that size is only populated for STREAM buffers.
     assert(size <= ub->gl.ubo.size);
     assert(ub->gl.ubo.base + offset + size <= ub->gl.ubo.capacity);
-    bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, ub->gl.ubo.base + offset, size);
+    //bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, ub->gl.ubo.base + offset, size);
     CHECK_GL_ERROR(utils::slog.e)
 }
 
