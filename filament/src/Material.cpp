@@ -275,6 +275,9 @@ backend::Handle<backend::HwProgram> FMaterial::getProgramSlow(uint8_t variantKey
     uint8_t vertexVariantKey = Variant::filterVariantVertex(variantKey);
     uint8_t fragmentVariantKey = Variant::filterVariantFragment(variantKey);
 
+    std::cout<<"vertexVariantKey "<<(int)vertexVariantKey<<std::endl;
+    std::cout<<"fragmentVariantKey "<<(int)fragmentVariantKey<<std::endl;
+
     /*
      * Vertex shader
      */

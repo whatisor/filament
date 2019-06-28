@@ -243,7 +243,7 @@ public:
     FCamera& getCameraUser() noexcept { return *mCullingCamera; }
     void setCameraUser(FCamera* camera) noexcept { setCullingCamera(camera); }
 
-private:
+public:
     static constexpr size_t MAX_FRAMETIME_HISTORY = 32u;
 
     void prepareVisibleRenderables(utils::JobSystem& js,

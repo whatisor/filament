@@ -85,6 +85,7 @@ void main() {
     gl_Position = getSkinnedPosition();
 #else
     gl_Position = getClipFromWorldMatrix() * material.worldPosition;
+    gl_Position.z = gl_Position.z - 0.5;
 #endif
 
 #if defined(TARGET_VULKAN_ENVIRONMENT)

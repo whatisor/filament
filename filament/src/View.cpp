@@ -622,6 +622,27 @@ void FView::prepareCamera(const CameraInfo& camera, const filament::Viewport& vi
     u.setUniform(offsetof(PerViewUib, clipFromWorldMatrix), clipFromWorld);    // projection * view
     u.setUniform(offsetof(PerViewUib, worldFromClipMatrix), worldFromClip);    // 1/(projection * view)
 
+        std::cout<<"worldFromView "<<std::endl;
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)&worldFromView[0][0]+i);
+    }
+    std::cout<<std::endl;
+    
+        std::cout<<"viewFromClip "<<std::endl;
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)&viewFromClip[0][0]+i);
+    }
+    std::cout<<std::endl;
+        std::cout<<"clipFromWorldMatrix "<<std::endl;
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)&clipFromWorld[0][0]+i);
+    }
+    std::cout<<std::endl;
+
+
     const float w = viewport.width;
     const float h = viewport.height;
     u.setUniform(offsetof(PerViewUib, resolution), float4{ w, h, 1.0f / w, 1.0f / h });
@@ -641,6 +662,8 @@ void FView::froxelize(FEngine& engine) const noexcept {
 
 void FView::commitUniforms(backend::DriverApi& driver) const noexcept {
     if (mPerViewUb.isDirty()) {
+        
+    std::cout<<"----------mPerViewUb---------"<<std::endl;
         driver.loadUniformBuffer(mPerViewUbh, mPerViewUb.toBufferDescriptor(driver));
     }
 

@@ -108,6 +108,8 @@ void FMaterialInstance::commitSlow(FEngine& engine) const {
     // update uniforms if needed
     FEngine::DriverApi& driver = engine.getDriverApi();
     if (mUniforms.isDirty()) {
+
+        std::cout<<__FUNCTION__<<std::endl;
         driver.loadUniformBuffer(mUbHandle, mUniforms.toBufferDescriptor(driver));
     }
     if (mSamplers.isDirty()) {

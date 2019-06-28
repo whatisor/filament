@@ -163,6 +163,7 @@ public:
         p.buffer = driver.allocate(p.size); // TODO: use out-of-line buffer if too large
         memcpy(p.buffer, static_cast<const char*>(getBuffer()) + offset, p.size);
         clean();
+        //std::cout<<__FUNCTION__<<(int64_t)(p.buffer)<<" "<<size<<std::endl;
         return p;
     }
 

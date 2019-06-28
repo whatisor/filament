@@ -564,7 +564,7 @@ Package MaterialBuilder::build() noexcept {
                 std::string vs = sg.createVertexProgram(
                         shaderModel, targetApi, targetLanguage, info, k,
                         mInterpolation, mVertexDomain);
-utils::slog.e <<"vs "<<vs.c_str();
+std::cout<<__FUNCTION__<<"vs "<<vs.c_str();
                 bool ok = postProcessor.process(vs, filament::backend::ShaderType::VERTEX,
                         shaderModel, &vs, pSpirv, pMsl);
                 if (!ok) {
@@ -612,7 +612,7 @@ utils::slog.e <<"vs "<<vs.c_str();
                 // Fragment Shader
                 std::string fs = sg.createFragmentProgram(
                         shaderModel, targetApi, targetLanguage, info, k, mInterpolation);
-utils::slog.e <<"fs "<<fs.c_str();
+std::cout<<__FUNCTION__<<" fs "<<fs.c_str();
                 bool ok = postProcessor.process(fs, filament::backend::ShaderType::FRAGMENT,
                         shaderModel, &fs, pSpirv, pMsl);
                 if (!ok) {
@@ -635,25 +635,25 @@ utils::slog.e <<"fs "<<fs.c_str();
                     glslEntries.push_back(glslEntry);
                 }
 
-                if (targetApi == TargetApi::VULKAN) {
-                    assert(!spirv.empty());
-                    spirvEntry.stage = filament::backend::ShaderType::FRAGMENT;
-                    spirvEntry.dictionaryIndex = spirvDictionary.addBlob(spirv);
-                    spirv.clear();
-                    spirvEntries.push_back(spirvEntry);
-                }
-                if (targetApi == TargetApi::METAL) {
-                    assert(spirv.size() > 0);
-                    assert(msl.length() > 0);
-                    metalEntry.stage = filament::backend::ShaderType::FRAGMENT;
-                    metalEntry.shaderSize = msl.length();
-                    metalEntry.shader = (char*)malloc(metalEntry.shaderSize + 1);
-                    strcpy(metalEntry.shader, msl.c_str());
-                    spirv.clear();
-                    msl.clear();
-                    metalDictionary.addText(metalEntry.shader);
-                    metalEntries.push_back(metalEntry);
-                }
+                // if (targetApi == TargetApi::VULKAN) {
+                //     assert(!spirv.empty());
+                //     spirvEntry.stage = filament::backend::ShaderType::FRAGMENT;
+                //     spirvEntry.dictionaryIndex = spirvDictionary.addBlob(spirv);
+                //     spirv.clear();
+                //     spirvEntries.push_back(spirvEntry);
+                // }
+                // if (targetApi == TargetApi::METAL) {
+                //     assert(spirv.size() > 0);
+                //     assert(msl.length() > 0);
+                //     metalEntry.stage = filament::backend::ShaderType::FRAGMENT;
+                //     metalEntry.shaderSize = msl.length();
+                //     metalEntry.shader = (char*)malloc(metalEntry.shaderSize + 1);
+                //     strcpy(metalEntry.shader, msl.c_str());
+                //     spirv.clear();
+                //     msl.clear();
+                //     metalDictionary.addText(metalEntry.shader);
+                //     metalEntries.push_back(metalEntry);
+                // }
             }
         }
     }

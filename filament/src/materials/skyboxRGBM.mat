@@ -24,7 +24,7 @@ fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
         vec3 sky = decodeRGBM(texture(materialParams_skybox, variable_eyeDirection.xyz));
-        sky *= iblLuminance;
+        //sky *= iblLuminance;
 
         material.baseColor = vec4(sky, 1.0);
     }

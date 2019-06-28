@@ -28,6 +28,7 @@ const ao_url = `ao${texture_suffix}.ktx`;
 const metallic_url = `metallic${texture_suffix}.ktx`;
 const normal_url = `normal${texture_suffix}.ktx`;
 const roughness_url = `roughness${texture_suffix}.ktx`;
+//const filamat_url = 'textured.filamat';
 const filamat_url = 'textured.filamat';
 const filamesh_url = 'suzanne.filamesh';
 
@@ -74,7 +75,7 @@ class App {
         indirectLight.setIntensity(100000);
 
         const skybox = engine.createSkyFromKtx(sky_url);
-        this.scene.setSkybox(skybox);
+        //this.scene.setSkybox(skybox);
 
         const material = engine.createMaterial(filamat_url);
         const matinstance = material.createInstance();

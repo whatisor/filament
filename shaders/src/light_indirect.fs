@@ -361,7 +361,7 @@ void evaluateSubsurfaceIBL(const PixelParams pixel, const vec3 diffuseIrradiance
     Fd *= saturate(pixel.subsurfaceColor + shading_NoV);
 #endif
 }
-
+//kn2019
 void evaluateIBL(const MaterialInputs material, const PixelParams pixel, inout vec3 color) {
     // Apply transform here if we wanted to rotate the IBL
     vec3 n = shading_normal;

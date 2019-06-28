@@ -250,6 +250,8 @@ void FRenderer::renderJob(ArenaScope& arena, FView& view) {
     view.updatePrimitivesLod(engine, cameraInfo,
             scene.getRenderableData(), view.getVisibleRenderables());
     view.prepareCamera(cameraInfo, svp);
+
+    std::cout<<"Commit  camere/view matrix\n";
     view.commitUniforms(driver);
 
     TargetBufferFlags clearFlags = view.getClearFlags();

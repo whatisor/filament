@@ -28,6 +28,7 @@
 #include "CommandStreamDispatcher.h"
 #include "OpenGLBlitter.h"
 #include "OpenGLProgram.h"
+#include "../../../../libs/filabridge/include/private/filament/UibGenerator.h"
 
 
 // change to true to display all GL extensions in the console on start-up
@@ -364,7 +365,7 @@ void OpenGLDriver::setViewport(GLint left, GLint bottom, GLsizei width, GLsizei 
 void OpenGLDriver::setClearColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) noexcept {
     float4 color(r, g, b, a);
     update_state(state.clears.color, color, [&]() {
-        glClearColor(r, g, b, a);
+        glClearColor(0, 0, 1.0, a);
     });
 }
 
@@ -426,7 +427,8 @@ void OpenGLDriver::bindBuffer(GLenum target, GLuint buffer) noexcept {
 
 void OpenGLDriver::bindBufferRange(GLenum target, GLuint index, GLuint buffer,
         GLintptr offset, GLsizeiptr size) noexcept {
-    //std::cout<<"kn2019 "<<__FUNCTION__<<std::endl;
+    if(GL_UNIFORM_BUFFER == target)
+    std::cout<<"kn2019 "<<__FUNCTION__<<target<<std::endl;
     size_t targetIndex = getIndexForBufferTarget(target);
     assert(targetIndex <= 1); // sanity check
 
@@ -494,6 +496,7 @@ void OpenGLDriver::bindTexture(GLuint unit, GLuint target, GLuint texId, size_t 
 void OpenGLDriver::useProgram(GLuint program) noexcept {
     update_state(state.program.use, program, [&]() {
         glUseProgram(program);
+        currentProgram = program;
     });
 }
 
@@ -928,7 +931,8 @@ void OpenGLDriver::createSamplerGroupR(Handle<HwSamplerGroup> sbh, size_t size) 
 
     construct<GLSamplerGroup>(sbh, size);
 }
-
+//kn2019 just POC
+static std::vector<int> uniformLocs;
 void OpenGLDriver::createUniformBufferR(
         Handle<HwUniformBuffer> ubh,
         size_t size,
@@ -1747,14 +1751,20 @@ void OpenGLDriver::updateIndexBuffer(
 
 void OpenGLDriver::loadUniformBuffer(Handle<HwUniformBuffer> ubh, BufferDescriptor&& p) {
     DEBUG_MARKER()
+    std::cout<<__FUNCTION__<<std::endl;
     GLUniformBuffer* ub = handle_cast<GLUniformBuffer *>(ubh);
-    assert(ub);
+    if(!ub->data)ub->data = new BufferDescriptor();
 
+    *(ub->data) = p;
+    assert(ub);
     if (p.size > 0) {
         //updateBuffer(GL_UNIFORM_BUFFER, &ub->gl.ubo, p,
         //        (uint32_t)gets.uniform_buffer_offset_alignment);
     }
-    scheduleDestroy(std::move(p));
+
+
+
+    ///scheduleDestroy(std::move(p));
 }
 
 void OpenGLDriver::updateBuffer(GLenum target,
@@ -2602,19 +2612,389 @@ void OpenGLDriver::bindUniformBuffer(size_t index, Handle<HwUniformBuffer> ubh) 
     GLUniformBuffer* ub = handle_cast<GLUniformBuffer *>(ubh);
     //assert(ub->gl.ubo.base == 0);
     //bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, 0, ub->gl.ubo.capacity);
+    
+    BufferDescriptor* p = (ub->data);
+    if(!p){
+        std::cout<<__FUNCTION__<<" invalid"<<std::endl;
+        return;
+    }
+    std::cout<<__FUNCTION__<<" (uint32_t)gets.uniform_buffer_offset_alignment "<<(uint32_t)gets.uniform_buffer_offset_alignment<<std::endl;
+    size_t offset = 0;
+    GLint handle = 0;
+    std::cout<<__FUNCTION__<<" "<<"currentProgram "<<currentProgram<<std::endl;
+    if( p->size == sizeof(PerViewUib))
+    {
+    std::cout<<__FUNCTION__<<" "<<"PerViewUib "<<std::endl;
+    // filament::math::mat4f viewFromWorldMatrix;
+    handle = glGetUniformLocation(currentProgram,"viewFromWorldMatrix");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, viewFromWorldMatrix);
+        offset /= 4;
+    std::cout<<"handle viewFromWorldMatrix "<<std::endl;
+    std::cout<<"offset "<<offset<<std::endl;
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)(p->buffer)+offset+i);
+    }
+    std::cout<<std::endl;
+    //std::cout<<"handle viewFromWorldMatrix "<<handle<<std::endl;
+    glUniformMatrix4fv(handle++,1,GL_FALSE,(float*)(p->buffer)+offset); }//offset+=16;
+    // filament::math::mat4f worldFromViewMatrix;
+    handle = glGetUniformLocation(currentProgram,"worldFromViewMatrix");//!!!!!!!!!1
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, worldFromViewMatrix);
+        offset /= 4;
+    std::cout<<"handle worldFromViewMatrix "<<std::endl;
+    std::cout<<"offset "<<offset<<std::endl;
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)(p->buffer)+offset+i);
+    }
+    std::cout<<std::endl;
+    //float testworldFromViewMatrix[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    
+    //std::cout<<"handle worldFromViewMatrix "<<handle<<std::endl;
+    glUniformMatrix4fv(handle++,1,GL_FALSE,(float*)(p->buffer)+offset); }//offset+=16;
+    //glUniformMatrix4fv(handle++,1,GL_FALSE,testworldFromViewMatrix); }//offset+=16;
+    // filament::math::mat4f clipFromViewMatrix;
+    handle = glGetUniformLocation(currentProgram,"clipFromViewMatrix");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, clipFromViewMatrix);
+        offset /= 4;
+    std::cout<<"handle clipFromViewMatrix "<<handle<<std::endl;
+    std::cout<<"offset "<<offset<<std::endl;
+
+    //std::cout<<"handle clipFromViewMatrix "<<handle<<std::endl;
+    glUniformMatrix4fv(handle++,1,GL_FALSE,(float*)(p->buffer)+offset); }//offset+=16;
+    // filament::math::mat4f viewFromClipMatrix;
+    handle = glGetUniformLocation(currentProgram,"viewFromClipMatrix");//!!!!!!!!!!11
+    if(handle >= 0){
+    std::cout<<"handle viewFromClipMatrix "<<std::endl;
+        offset = offsetof(PerViewUib, viewFromClipMatrix);
+        offset /= 4;
+    std::cout<<"offset "<<offset<<std::endl;
+
+    //1.58254 0 0 0 0 0.414214 0 0 0 0 0 -0.5 0 0 -1 0.5
+    //float testViewFromClipMatrix[16] = {0.547957, 0, 0, 0, 0, 0.414214, 0, 0, 0, 0, 0, -0.5, 0, 0, -1, 0.5};
+    //float testViewFromClipMatrix[16] = {1.58254, 0, 0, 0, 0, 0.414214, 0, 0, 0, 0, 0, -0.5, 0, 0, -1, 0.5};
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)(p->buffer)+offset+i);
+    }
+    std::cout<<std::endl;
+    //glUniformMatrix4fv(handle++,1,GL_FALSE,testViewFromClipMatrix);}// offset+=16;
+    glUniformMatrix4fv(handle++,1,GL_FALSE,(float*)(p->buffer)+offset);}// offset+=16;
+    // filament::math::mat4f clipFromWorldMatrix;
+    handle = glGetUniformLocation(currentProgram,"clipFromWorldMatrix");
+    if(handle >= 0){
+        std::cout<<"handle clipFromWorldMatrix "<<std::endl;
+        offset = offsetof(PerViewUib, clipFromWorldMatrix);
+        offset /= 4;
+    std::cout<<"offset "<<offset<<std::endl;
+    // 1.82496 0 0 0 0 2.41421 0 0 0 0 -1 -1 0 0 -2 0
+    //0.631896 0 0 0 0 2.41421 0 0 0 0 -1 -1 0 0 -2 0
+    //float testClipFromWorldMatrix[16] = {1.82496, 0, 0, 0, 0, 2.41421, 0, 0, 0, 0, -1, -1, 0, 0, -2, 0};
+   // float testClipFromWorldMatrix[16] = {0.631896, 0, 0, 0, 0, 2.41421, 0, 0, 0, 0, -1, -1, 0, 0, -2, 0};
+    for(int i = 0 ; i < 16; i++)
+    {
+        std::cout<<" "<<*((float*)(p->buffer)+offset+i);
+    }
+    std::cout<<std::endl;
+    //std::cout<<"handle clipFromWorldMatrix "<<handle<<std::endl;
+    glUniformMatrix4fv(handle++,1,GL_FALSE,(float*)(p->buffer)+offset); }//offset+=16;
+    //glUniformMatrix4fv(handle++,1,GL_FALSE,testClipFromWorldMatrix); }//offset+=16;
+    // filament::math::mat4f worldFromClipMatrix;
+    handle = glGetUniformLocation(currentProgram,"worldFromClipMatrix");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, worldFromClipMatrix);
+        offset /= 4;
+    std::cout<<"handle worldFromClipMatrix "<<handle<<std::endl;
+    std::cout<<"offset "<<offset<<std::endl;
+    glUniform1fv(handle++,1,(float*)(p->buffer)+offset); }//offset+=16;
+    // filament::math::mat4f lightFromWorldMatrix;
+    handle = glGetUniformLocation(currentProgram,"lightFromWorldMatrix");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, lightFromWorldMatrix);
+        offset /= 4;
+    std::cout<<"handle lightFromWorldMatrix "<<handle<<std::endl;
+    std::cout<<"offset "<<offset<<std::endl;
+    glUniformMatrix4fv(handle++,1,GL_FALSE,(float*)(p->buffer)+offset);} //offset+=16;
+    handle = glGetUniformLocation(currentProgram,"resolution");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, resolution);
+        offset /= 4;
+    std::cout<<"offset "<<offset<<std::endl;
+    std::cout<<"handle resolution"<<" "<<*((float*)(p->buffer)+offset)<<std::endl;
+    // filament::math::float4 resolution; // viewport width, height, 1/width, 1/height
+    glUniform4fv(handle++,1,(float*)(p->buffer)+offset); }//offset+=4;
+
+    handle = glGetUniformLocation(currentProgram,"cameraPosition");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, cameraPosition);
+        offset /= 4;
+    //std::cout<<"handle cameraPosition "<<handle<<std::endl;
+    // filament::math::float3 cameraPosition;
+    glUniform3fv(handle++,1,(float*)(p->buffer)+offset); }//offset+=3;
+    handle = glGetUniformLocation(currentProgram,"time");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, time);
+        offset /= 4;
+    //std::cout<<"handle time "<<handle<<std::endl;
+    // float time; // time in seconds, with a 1 second period
+    glUniform1f(handle++,*((float*)(p->buffer)+offset)); }//offset+=1;
+    handle = glGetUniformLocation(currentProgram,"lightColorIntensity");
+    if(handle >= 0){
+    //std::cout<<"handle lightColorIntensity "<<handle<<std::endl;
+
+        offset = offsetof(PerViewUib, lightColorIntensity);
+        offset /= 4;
+    // filament::math::float4 lightColorIntensity; // directional light
+    glUniform4fv(handle++,1,(float*)(p->buffer)+offset);} //offset+=4;
+    handle = glGetUniformLocation(currentProgram,"sun");
+    if(handle >= 0){
+    //std::cout<<"handle sun "<<handle<<std::endl;
+
+        offset = offsetof(PerViewUib, sun);
+        offset /= 4;
+    // filament::math::float4 sun; // cos(sunAngle), sin(sunAngle), 1/(sunAngle*HALO_SIZE-sunAngle), HALO_EXP
+
+    glUniform4fv(handle++,1,(float*)(p->buffer)+offset);} //offset+=4;
+    handle = glGetUniformLocation(currentProgram,"lightDirection");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, lightDirection);
+        offset /= 4;
+    //std::cout<<"handle lightDirection "<<handle<<std::endl;
+    // filament::math::float3 lightDirection;
+    glUniform3fv(handle++,1,(float*)(p->buffer)+offset); }//offset+=3;
+    handle = glGetUniformLocation(currentProgram,"fParamsX");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, fParamsX);
+        offset /= 4;
+    std::cout<<"handle fParamsX "<<*((int*)(p->buffer)+offset)<<std::endl;
+    // uint32_t fParamsX; // stride-x
+    glUniform1i(handle++,*((int*)(p->buffer)+offset)); }//offset+=1;
+    handle = glGetUniformLocation(currentProgram,"shadowBias");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, shadowBias);
+        offset /= 4;
+    //std::cout<<"handle shadowBias "<<handle<<std::endl;
+
+    // filament::math::float3 shadowBias; // constant bias, normal bias, unused
+    glUniform3fv(handle++,1,((float*)(p->buffer)+offset)); }//offset+=3;
+
+
+    // float oneOverFroxelDimensionY;
+    handle = glGetUniformLocation(currentProgram,"oneOverFroxelDimensionY");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, oneOverFroxelDimensionY);
+        offset /= 4;
+    //std::cout<<"handle  oneOverFroxelDimensionY "<<handle<<std::endl;
+    glUniform1f(handle++,*((float*)(p->buffer)+offset)); }//offset+=1;
+
+    handle = glGetUniformLocation(currentProgram,"zParams");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, zParams);
+        offset /= 4;
+    std::cout<<"handle zParams "<<*((float*)(p->buffer)+offset)<<std::endl;
+
+    // filament::math::float4 zParams; // froxel Z parameters
+    glUniform4fv(handle++,1,(float*)(p->buffer)+offset); }//offset+=4;
+    handle = glGetUniformLocation(currentProgram,"fParams");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, fParams);
+        offset /= 4;
+
+    std::cout<<"handle fParams "<<*((int*)(p->buffer)+offset)<<std::endl;
+    // filament::math::uint2 fParams; // stride-y, stride-z
+    glUniform2iv(handle++,1,(int*)(p->buffer)+offset);} //offset+=2;
+    handle = glGetUniformLocation(currentProgram,"origin");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, origin);
+        offset /= 4;
+    //std::cout<<"handle origin "<<handle<<std::endl;
+    // filament::math::float2 origin; // viewport left, viewport bottom
+    glUniform2fv(handle++,2,(float*)(p->buffer)+offset); }//offset+=2;
+    handle = glGetUniformLocation(currentProgram,"oneOverFroxelDimensionX");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, oneOverFroxelDimensionX);
+        offset /= 4;
+
+    std::cout<<"handle oneOverFroxelDimensionX "<<*((float*)(p->buffer)+offset)<<std::endl;
+    // float oneOverFroxelDimensionX;
+    glUniform1f(handle++,*((float*)(p->buffer)+offset)); }//offset+=1;
+    handle = glGetUniformLocation(currentProgram,"iblLuminance");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, iblLuminance);
+        offset /= 4;
+    // float iblLuminance;
+    glUniform1f(handle++,*((float*)(p->buffer)+offset));} //offset+=1;
+    handle = glGetUniformLocation(currentProgram,"exposure");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, exposure);
+        offset /= 4;
+    //std::cout<<"handle exposure "<<handle<<std::endl;
+    // float exposure;
+    glUniform1f(handle++,*((float*)(p->buffer)+offset));} //offset+=1;
+    handle = glGetUniformLocation(currentProgram,"ev100");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, ev100);
+        offset /= 4;
+    //std::cout<<"handle ev100 "<<handle<<std::endl;
+    // float ev100;
+    glUniform1f(handle++,*((float*)(p->buffer)+offset)); }//offset+=1;
+    handle = glGetUniformLocation(currentProgram,"iblSH");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, iblSH);
+        offset /= 4;
+    std::cout<<"handle iblSH "<<*((float*)(p->buffer)+offset)<<std::endl;
+
+    // alignas(16) filament::math::float4 iblSH[9]; // actually float3 entries (std140 requires float4 alignment)
+
+    glUniform3fv(handle++,9,(float*)(p->buffer)+offset); }//offset+=4*9;
+    handle = glGetUniformLocation(currentProgram,"userTime");
+    if(handle >= 0){
+        offset = offsetof(PerViewUib, userTime);
+        offset /= 4;
+    //std::cout<<"handle userTime "<<handle<<std::endl;
+    // filament::math::float4 userTime;  // time(s), (double)time - (float)time, 0, 0
+    glUniform4fv(handle++,1,(float*)(p->buffer)+offset); }offset+=4;
+
+
+
+    }
+    else if(p->size == sizeof(LightsUib)){
+        std::cout<<__FUNCTION__<<" "<<"LightsUib "<<std::endl;
+        offset = 0;
+        //filament::math::float4 positionFalloff;   // { float3(pos), 1/falloff^2 }
+        handle = glGetUniformLocation(currentProgram,"positionFalloff");
+        if(handle >= 0){
+            //std::cout<<"LightsUib "<<handle<<std::endl;
+            glUniform4fv(handle,1,(float*)(p->buffer)+offset); 
+        }
+        offset+=4;
+        //filament::math::float4 colorIntensity;    // { float3(col), intensity }
+        handle = glGetUniformLocation(currentProgram,"colorIntensity");
+        if(handle >= 0){
+            //std::cout<<"LightsUib "<<handle<<std::endl;
+            glUniform4fv(handle,1,(float*)(p->buffer)+offset); 
+        }
+        offset+=4;
+        //filament::math::float4 directionIES;      // { float3(dir), IES index }        
+        handle = glGetUniformLocation(currentProgram,"directionIES");
+        if(handle >= 0){
+            //std::cout<<"LightsUib "<<handle<<std::endl;
+            glUniform4fv(handle,1,(float*)(p->buffer)+offset); 
+        }
+        offset+=4;
+        //filament::math::float4 spotScaleOffset;   // { scale, offset, unused, unused }       
+        handle = glGetUniformLocation(currentProgram,"spotScaleOffset");
+        if(handle >= 0){
+            //std::cout<<"LightsUib "<<handle<<std::endl;
+            glUniform4fv(handle,1,(float*)(p->buffer)+offset); 
+        }
+        offset+=4;
+    }
+    else if(p->size == sizeof(PostProcessingUib)){
+        std::cout<<__FUNCTION__<<" "<<"PostProcessingUib "<<std::endl;
+        // filament::math::float2 uvScale;
+        handle = glGetUniformLocation(currentProgram,"uvScale");
+        if(handle >= 0){
+            //std::cout<<"PostProcessingUib uvScale "<<handle<<std::endl;
+            glUniform2fv(handle,1,(float*)(p->buffer)+offset); 
+        }
+        offset+=2;
+        // float time;             // time in seconds, with a 1 second period, used for dithering
+       
+        handle = glGetUniformLocation(currentProgram,"time");
+        if(handle >= 0){
+           // std::cout<<"PostProcessingUib time "<<handle<<std::endl;
+            glUniform1f(handle,*((float*)(p->buffer)+offset)); 
+        }
+        offset+=1;
+        // float yOffset;
+        handle = glGetUniformLocation(currentProgram,"yOffset");
+        if(handle >= 0){
+           // std::cout<<"PostProcessingUib yOffset "<<handle<<std::endl;
+            glUniform1f(handle,*((float*)(p->buffer)+offset)); 
+        }
+        offset+=1;
+        // int dithering;          // type of dithering 0=none, 1=enabled
+        handle = glGetUniformLocation(currentProgram,"dithering");
+        if(handle >= 0){
+            //std::cout<<"PostProcessingUib dithering "<<handle<<std::endl;
+            glUniform1i(handle,*((int*)(p->buffer)+offset)); 
+        }
+        offset+=1;
+
+    }
+    // else if(p->size == sizeof(PerRenderableUibBone)){
+    //     //std::cout<<"PerRenderableUibBone not supported"<<std::endl;
+    // }
+    else if(p->size == sizeof(PerRenderableUib)){
+        std::cout<<__FUNCTION__<<" "<<"PerRenderableUib "<<std::endl;
+        offset = 0;
+
+        // filament::math::mat4f worldFromModelMatrix;       
+        handle = glGetUniformLocation(currentProgram,"worldFromModelMatrix");
+        if(handle >= 0){
+            //std::cout<<"PerRenderableUib worldFromModelMatrix "<<handle<<std::endl;
+            glUniformMatrix4fv(handle,1,GL_FALSE,(float*)(p->buffer)+offset); 
+                for(int i = 0 ; i < 16; i++)
+                    {
+                        std::cout<<" "<<*((float*)(p->buffer)+offset+i);
+                    }
+                    std::cout<<std::endl;
+        }
+        offset+=16;
+        // filament::math::mat3f worldFromModelNormalMatrix;      
+        handle = glGetUniformLocation(currentProgram,"worldFromModelNormalMatrix");
+        if(handle >= 0){
+            //std::cout<<"PerRenderableUib worldFromModelNormalMatrix "<<handle<<std::endl;
+            glUniformMatrix3fv(handle,1,GL_FALSE,(float*)(p->buffer)+offset); 
+                            for(int i = 0 ; i < 12; i++)
+                    {
+                        std::cout<<" "<<*((float*)(p->buffer)+offset+i);
+                    }
+                    std::cout<<std::endl;
+        }
+        offset+=12;
+
+    }else{
+        std::cout<<"[ERROR]Undefined buffer struct "<<currentProgram<<std::endl;
+        GLint i;
+        GLint count;
+
+        GLint size; // size of the variable
+        GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+        const GLsizei bufSize = 26; // maximum name length
+        GLchar name[bufSize]; // variable name in GLSL
+        GLsizei length; // name length
+        glGetProgramiv(currentProgram, GL_ACTIVE_UNIFORMS, &count);
+            printf("Active Uniforms: %d\n", count);
+
+            for (i = 0; i < count; i++)
+            {
+                glGetActiveUniform(currentProgram, (GLuint)i, bufSize, &length, &size, &type, name);
+
+                printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+            }
+    }
+
+
     CHECK_GL_ERROR(utils::slog.e)
 }
 
 void OpenGLDriver::bindUniformBufferRange(size_t index, Handle<HwUniformBuffer> ubh,
         size_t offset, size_t size) {
     DEBUG_MARKER()
-
-    GLUniformBuffer* ub = handle_cast<GLUniformBuffer*>(ubh);
+    this->bindUniformBuffer(index,ubh);
+    //GLUniformBuffer* ub = handle_cast<GLUniformBuffer*>(ubh);
     // TODO: Is this assert really needed? Note that size is only populated for STREAM buffers.
     //assert(size <= ub->gl.ubo.size);
     //assert(ub->gl.ubo.base + offset + size <= ub->gl.ubo.capacity);
     //bindBufferRange(GL_UNIFORM_BUFFER, GLuint(index), ub->gl.ubo.id, ub->gl.ubo.base + offset, size);
-    CHECK_GL_ERROR(utils::slog.e)
+    //CHECK_GL_ERROR(utils::slog.e)
 }
 
 void OpenGLDriver::bindSamplers(size_t index, Handle<HwSamplerGroup> sbh) {

@@ -14,7 +14,7 @@ void computeShadingParams() {
     HIGHP vec3 n = dot(vertex_worldNormal, vertex_worldNormal) >= 1.01 ?
             vertex_worldNormalCentroid : vertex_worldNormal;
 #else
-    HIGHP vec3 n = vertex_worldNormal;
+    HIGHP vec3 n = vec3(0.0,1.0,0.0);//vertex_worldNormal;
 #endif
 
 #if defined(MATERIAL_HAS_DOUBLE_SIDED_CAPABILITY)
@@ -25,8 +25,9 @@ void computeShadingParams() {
 
 #if defined(MATERIAL_HAS_ANISOTROPY) || defined(MATERIAL_HAS_NORMAL) || defined(MATERIAL_HAS_CLEAR_COAT_NORMAL)
     // Re-normalize post-interpolation values
-    shading_tangentToWorld = mat3(
-            normalize(vertex_worldTangent), normalize(vertex_worldBitangent), normalize(n));
+    //shading_tangentToWorld = mat3(
+    //        normalize(vertex_worldTangent), normalize(vertex_worldBitangent), normalize(n));
+            shading_tangentToWorld[2] = normalize(n);
 #endif
     // Leave the tangent and bitangent uninitialized, we won't use them
     shading_tangentToWorld[2] = normalize(n);

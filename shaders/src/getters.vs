@@ -71,7 +71,7 @@ vec4 getPosition() {
 vec4 getSkinnedPosition() {
     vec4 pos = getPosition();
 #if defined(HAS_SKINNING)
-    skinPosition(pos.xyz, mesh_bone_indices, mesh_bone_weights);
+    //skinPosition(pos.xyz, mesh_bone_indices, mesh_bone_weights);
 #endif
     return pos;
 }

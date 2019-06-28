@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <unistd.h>
 #include "RenderPass.h"
 
 #include "details/Culler.h"
@@ -188,11 +188,13 @@ void RenderPass::recordDriverCommands(FEngine::DriverApi& driver, FScene& scene,
             pipeline.program = ma->getProgram(info.materialVariant.key);
             size_t offset = info.index * sizeof(PerRenderableUib);
             if (info.perRenderableBones) {
-                driver.bindUniformBuffer(BindingPoints::PER_RENDERABLE_BONES, info.perRenderableBones);
+                //driver.bindUniformBuffer(BindingPoints::PER_RENDERABLE_BONES, info.perRenderableBones);
             }
+            std::cout<<"mi "<<mi<<std::endl;
             driver.bindUniformBufferRange(BindingPoints::PER_RENDERABLE, uboHandle, offset, sizeof(PerRenderableUib));
             driver.draw(pipeline, info.primitiveHandle);
             ++first;
+            usleep(2000000);
         }
     }
 }

@@ -18,6 +18,7 @@
 #define TNT_FILAMENT_DRIVER_OPENGLDRIVER_H
 
 #include "private/backend/Driver.h"
+#include "backend/BufferDescriptor.h"
 #include "DriverBase.h"
 #include "GLUtils.h"
 
@@ -78,10 +79,12 @@ public:
         GLUniformBuffer(uint32_t capacity, backend::BufferUsage usage) noexcept {
             gl.ubo.capacity = capacity;
             gl.ubo.usage = usage;
+            data = NULL;
         }
         struct {
             GLBuffer ubo;
         } gl;
+        backend::BufferDescriptor* data;
     };
 
     struct GLSamplerGroup : public backend::HwSamplerGroup {
@@ -576,6 +579,9 @@ private:
     OpenGLBlitter* mOpenGLBlitter = nullptr;
     void updateStream(GLTexture* t, backend::DriverApi* driver) noexcept;
     void updateBuffer(GLenum target, GLBuffer* buffer, backend::BufferDescriptor const& p, uint32_t alignment = 16) noexcept;
+
+    
+    GLuint currentProgram;
 };
 
 // ------------------------------------------------------------------------------------------------

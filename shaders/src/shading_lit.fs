@@ -155,11 +155,11 @@ vec4 evaluateLights(const MaterialInputs material) {
     evaluateIBL(material, pixel, color);
 
 #if defined(HAS_DIRECTIONAL_LIGHTING)
-    evaluateDirectionalLight(pixel, color);
+   // evaluateDirectionalLight(pixel, color);
 #endif
 
 #if defined(HAS_DYNAMIC_LIGHTING)
-    evaluatePunctualLights(pixel, color);
+    //evaluatePunctualLights(pixel, color);
 #endif
 
 #if defined(BLEND_MODE_FADE) && !defined(SHADING_MODEL_UNLIT)
@@ -187,6 +187,6 @@ vec4 evaluateMaterial(const MaterialInputs material) {
             pow(2.0, ev100 + emissive.w - 3.0), exposure);
     color.rgb += emissive.rgb * attenuation;
 #endif
-
+    //baseColor,normal is ok, no emissive
     return color;
 }

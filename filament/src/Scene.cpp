@@ -164,6 +164,7 @@ void FScene::prepare(const mat4f& worldOriginTransform) {
 }
 
 void FScene::updateUBOs(utils::Range<uint32_t> visibleRenderables, backend::Handle<backend::HwUniformBuffer> renderableUbh) noexcept {
+    std::cout<<__FUNCTION__<<std::endl;
     FEngine::DriverApi& driver = mEngine.getDriverApi();
     const size_t size = visibleRenderables.size() * sizeof(PerRenderableUib);
 
@@ -172,12 +173,18 @@ void FScene::updateUBOs(utils::Range<uint32_t> visibleRenderables, backend::Hand
 
     auto& sceneData = mRenderableData;
     for (uint32_t i : visibleRenderables) {
+        std::cout<<i<<std::endl;
         mat4f const& model = sceneData.elementAt<WORLD_TRANSFORM>(i);
         const size_t offset = i * sizeof(PerRenderableUib);
 
         UniformBuffer::setUniform(buffer,
                 offset + offsetof(PerRenderableUib, worldFromModelMatrix),
                 model);
+                        for(int i = 0 ; i < 16; i++)
+                    {
+                        std::cout<<" "<<*((float*)&model[0][0]+i);
+                    }
+                    std::cout<<std::endl;
 
         // Using the inverse-transpose handles non-uniform scaling, but DOESN'T guarantee that
         // the transformed normals will have unit-length, therefore they need to be normalized
@@ -195,10 +202,18 @@ void FScene::updateUBOs(utils::Range<uint32_t> visibleRenderables, backend::Hand
 
         UniformBuffer::setUniform(buffer,
                 offset + offsetof(PerRenderableUib, worldFromModelNormalMatrix), m);
+
+                        for(int i = 0 ; i < 9; i++)
+                    {
+                        std::cout<<" "<<*((float*)&m[0][0]+i);
+                    }
+                    std::cout<<std::endl;
     }
 
     // TODO: handle static objects separately
     mRenderableViewUbh = renderableUbh;
+
+    std::cout<<"----------renderableUbh---------"<<std::endl;
     driver.loadUniformBuffer(renderableUbh, { buffer, size });
 }
 
@@ -258,6 +273,7 @@ void FScene::prepareDynamicLights(const CameraInfo& camera, ArenaScope& rootAren
         lp[gpuIndex].spotScaleOffset.xy   = { lcm.getSpotParams(li).scaleOffset };
     }
 
+    std::cout<<"----------LightsUib---------"<<std::endl;
     driver.loadUniformBuffer(lightUbh, { lp, positionalLightCount * sizeof(LightsUib) });
 }
 

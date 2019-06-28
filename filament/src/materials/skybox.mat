@@ -23,8 +23,8 @@ material {
 fragment {
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        vec3 sky = texture(materialParams_skybox, variable_eyeDirection.xyz).rgb;
-        sky *= iblLuminance;
+        vec3 sky = vec3(1.0,0.0,0.0);texture(materialParams_skybox, variable_eyeDirection.xyz).rgb;
+        sky *= 1.0;//iblLuminance;
         
         material.baseColor = vec4(sky, 1.0);
     }
